@@ -7,8 +7,16 @@ const userRouter = require('./routes/userRoutes');
 
 //1st middle ware
 //3rd parrty middleware
-app.use(morgan('dev'));
+
+//this is how you use enviornment variables refer notes for more
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
+
 app.use(express.json());
+//below code is how you server a code from file and note from url
+app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   console.log(`hello from the middleware `);

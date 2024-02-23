@@ -4,6 +4,31 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );
 
+//one middleware to check whether there is any invalid id
+exports.checkId = (req, res, next, val) => {
+  console.log(`tour id is: ${val}`);
+  if (req.params.id * 1 > tours.length) {
+    return res.status(400).json({
+      //this return is very important if not present then further codes will run
+
+      status: 'fail',
+      message: 'Invalid id ',
+    });
+  }
+  next();
+};
+
+//checkbody middleware
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: 'fail',
+      messade: 'Missing name or price',
+    });
+  }
+  next();
+};
+
 //route handlers
 
 //here as we have to export all the route handlers then here we will replace const with exports.(dot)
@@ -86,13 +111,6 @@ exports.createTour = (req, res) => {
 };
 
 exports.updateTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid id ',
-    });
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -102,13 +120,6 @@ exports.updateTour = (req, res) => {
 };
 
 exports.deleteTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Invalid id ',
-    });
-  }
-
   res.status(204).json({
     status: 'success',
     data: null, //here we dont send any data
